@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>番茄钟</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <style>
+      body {
+        text-align: center;
+      }
+      #timer-container {
+        width: 300px;
+        height:300px;
+        margin: 0 auto;
+      }
+      #switch-button {
+        margin: 12px 0 0 0;
+        width: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>番茄钟</h1>
+    <div id="timer-container"></div>
+    <button id="switch-button">开始工作</button>
+    <script>
+      require('./renderer.js')
+    </script>
+  </body>
+</html>
