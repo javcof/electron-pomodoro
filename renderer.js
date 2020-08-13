@@ -12,7 +12,10 @@ const progressBar = new ProgressBar.Circle('#timer-container', {
 
 let workTime = 1 * 10;
 let restTime = 10;
-let state = {};
+let state = {
+  type: 1,
+  remainTime: workTime,
+};
 let clockTimer;
 
 function setState(_state) {
@@ -22,7 +25,7 @@ function setState(_state) {
 
 function startWork() {
   setState({
-    type: 1,
+    type: 2,
     remainTime: workTime,
   });
 }
@@ -35,22 +38,48 @@ function finishWork() {
 }
 
 function render() {
-  const { remainTime } = state;
+  const { remainTime, type } = state;
+  const ss = (remainTime % 60).toFixed(0).padStart(2, 0);
+  const mm = ((remainTime - ss) / 60).toFixed(0).padStart(2, 0);
   progressBar.set(1 - remainTime / workTime);
-  progressBar.setText(remainTime);
+  progressBar.setText(`${mm}:${ss}`);
+
+  switch (type) {
+    case 1:
+      switchButton.innerText = '开始工作';
+      break;
+    case 2:
+      switchButton.innerText = '停止工作';
+      break;
+    case 3:
+      switchButton.innerText = '暂停工作';
+      break;
+  }
+}
+
+function handleTimer() {
+  const { remainTime, type } = state;
+  if (remainTime === 0) {
+    finishWork();
+    setState({
+      type: 1,
+    });
+  }
+  setState({
+    remainTime: remainTime > 0 ? remainTime - 1 : 0,
+  });
 }
 
 switchButton.onclick = () => {
-  startWork();
-
-  clockTimer = setInterval(() => {
-    const { remainTime } = state;
-    if (remainTime === 0) {
-      finishWork();
-    }
+  if (switchButton.innerText === '开始工作') {
+    startWork();
+    clockTimer = setInterval(handleTimer, 1000);
+  } else if (switchButton.innerText === '停止工作') {
     setState({
       type: 1,
-      remainTime: remainTime > 0 ? remainTime - 1 : 0,
+      remainTime: 0,
     });
-  }, 1000);
+  }
 };
+
+render();
