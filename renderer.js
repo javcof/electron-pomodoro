@@ -32,9 +32,7 @@ function startWork() {
 
 function finishWork() {
   clearInterval(clockTimer);
-  ipcRenderer.invoke('notification', { a: 'a', b: 'b' }).then((res) => {
-    console.log(res.event);
-  });
+  ipcRenderer.send('notification');
 }
 
 function render() {
