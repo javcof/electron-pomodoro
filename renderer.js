@@ -1,8 +1,11 @@
 const { ipcRenderer } = require('electron');
 const ProgressBar = require('progressbar.js');
 
-const switchButton = document.getElementById('switch-button');
-const progressBar = new ProgressBar.Circle('#timer-container', {
+const WORK_TYPE_START_WORK = 1;
+const WORK_TYPE_STOP_WORK = 2;
+
+let switchButton = document.getElementById('switch-button');
+let progressBar = new ProgressBar.Circle('#timer-container', {
   strokeWidth: 2,
   color: '#0076ce',
   trailColor: '#eee',
@@ -13,7 +16,7 @@ const progressBar = new ProgressBar.Circle('#timer-container', {
 let workTime = 1 * 10;
 let restTime = 10;
 let state = {
-  type: 1,
+  type: WORK_TYPE_START_WORK,
   remainTime: workTime,
 };
 let clockTimer;
@@ -25,7 +28,7 @@ function setState(_state) {
 
 function startWork() {
   setState({
-    type: 2,
+    type: WORK_TYPE_STOP_WORK,
     remainTime: workTime,
   });
 }
@@ -43,14 +46,11 @@ function render() {
   progressBar.setText(`${mm}:${ss}`);
 
   switch (type) {
-    case 1:
+    case WORK_TYPE_START_WORK:
       switchButton.innerText = '开始工作';
       break;
-    case 2:
+    case WORK_TYPE_STOP_WORK:
       switchButton.innerText = '停止工作';
-      break;
-    case 3:
-      switchButton.innerText = '暂停工作';
       break;
   }
 }
@@ -60,7 +60,7 @@ function handleTimer() {
   if (remainTime === 0) {
     finishWork();
     setState({
-      type: 1,
+      type: WORK_TYPE_START_WORK,
     });
   }
   setState({
@@ -74,7 +74,7 @@ switchButton.onclick = () => {
     clockTimer = setInterval(handleTimer, 1000);
   } else if (switchButton.innerText === '停止工作') {
     setState({
-      type: 1,
+      type: WORK_TYPE_START_WORK,
       remainTime: 0,
     });
   }
